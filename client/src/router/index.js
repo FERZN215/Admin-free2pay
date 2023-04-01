@@ -32,6 +32,18 @@ const routes = [
     component:()=>import('../views/UserEdit.vue')
   },
 
+  {
+    path:'/Deal/:id',
+    name:'DealView',
+   
+    component:()=>import('../views/DealView.vue')
+  },
+  {
+    path:'/Chat/:id',
+    name:'ChatView',
+   
+    component:()=>import('../views/ChatView.vue')
+  }
   
 ]
 

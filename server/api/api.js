@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const users = require('../models/users')
+const chats = require('../models/chats')
 const cfg = require('../../conf')
 const RSA = require('node-rsa');
 
@@ -46,7 +47,36 @@ router.post('/userById', async (req, res) => {
     res.send(user)//sending user
 })
 
+router.post('/getChat', async(req,res)=>{
+    const chat = await chats.findOne({"_id": req.body._id})
+    if(chat)
+        res.send(chat)
+    else
+        res.send(false)
+})
 
+
+router.post('/getUserByTgId', async function(req, res){
+    const user = await users.findOne({"telegram_id":req.body._id})
+    if(user)
+        res.send(user)
+    else
+        res.send(false)
+
+})
+
+router.post('/sendMsg', async(req,res)=>{
+    const {msg, chat_id, cur_id} = req.body
+    const admin = await users.findOne({"_id":cur_id})
+    const result = await chats.updateOne({"_id":chat_id},{"$push":{"msgs":{
+        "from":admin["telegram_id"],
+        "text":msg
+    }}})
+    if(result.acknowledged)
+        res.send(true)
+    else
+        res.send(false)
+})
 
 router.post('/addWarn', async(req,res)=>{//genius warn system
     const {_id} = req.body

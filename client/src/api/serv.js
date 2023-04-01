@@ -34,6 +34,21 @@ export default {
     },
     check(id){
         return api().post('check', {_id:id})
+    },
+    getChat(id){
+        return api().post('getChat', {_id:id})
+    },
+    getDeal(id){
+        return api().post('getDeal', {_id:id})
+    },
+    
+    getUserByTgId(id){
+        return api().post('getUserByTgId', {_id:id})
+    }
+    ,
+    
+    sendMsg(msg, chat_id, cur_id){
+        return api().post('sendMsg', {msg:msg, chat_id:chat_id, cur_id:cur_id})
     }
    
 }
