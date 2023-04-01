@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const users = require('../models/users')
 const chats = require('../models/chats')
+const deals = require('../models/deals')
 const cfg = require('../../conf')
 const RSA = require('node-rsa');
 
@@ -106,6 +107,37 @@ router.post('/editUser' , async(req,res)=>{
             "status":user["status"], 
             "warns":user["warns"], 
             "balance":user["balance"]
+        }})
+
+    if (status.acknowledged)
+        res.send(true)
+    else
+        res.send(false)
+
+})
+
+router.post('/getDealById', async function(req, res){
+    const deal = await deals.findOne({"_id":req.body._id})
+    if(deal)
+        res.send(deal)
+    else
+        res.send(false)
+
+})
+
+router.post('/editDeal' , async(req,res)=>{
+   
+    const {deal} = req.body
+    const status = await deals.updateOne({"_id":deal["_id"]}, {
+        "$set":{
+            "status":deal["status"],
+            "game": deal["game"],
+            "category": deal["category"],
+            "seller": deal["seller"],
+            "seller": deal["seller"],
+            "buyer": deal["buyer"],
+            "cost": deal["cost"],
+
         }})
 
     if (status.acknowledged)

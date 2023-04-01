@@ -15,7 +15,7 @@
            
         </div>
         <input type="text" class="send" style="margin-right:5px;" v-model="msg_s" placeholder="Введите сообщение">
-        <button  @click="send" class="btn btn-success"> Send</button>
+        <button  @click="send" class="btn btn-success">Send</button>
     </div>
 </template>
 
@@ -33,14 +33,21 @@ export default {
     },
     methods:{
         async send(){
-           
-            const resp = await serv.sendMsg(this.msg_s, this.chat._id, localStorage.id )
-            if (resp.data)
-                this.msg_s = ""
-            else{
-                this.msg_s = ""
-                alert("SMTH went wrong")
+            this.msg_s = this.msg_s.trimStart()
+            if (this.msg_s.length){
+                const resp = await serv.sendMsg(this.msg_s, this.chat._id, localStorage.id )
+                if (resp.data)
+                    this.msg_s = ""
+                else{
+                    this.msg_s = ""
+                    alert("SMTH went wrong")
+                }
             }
+            else{
+                alert("Только долбоебы пустые сообщения отправляют")
+            }
+            
+
 
         }
     },

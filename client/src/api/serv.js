@@ -39,9 +39,12 @@ export default {
         return api().post('getChat', {_id:id})
     },
     getDeal(id){
-        return api().post('getDeal', {_id:id})
+        return api().post('getDealById', {_id:id})
     },
-    
+    editDeal(deal){
+        return api().post('editDeal', {"deal":deal})
+
+    },
     getUserByTgId(id){
         return api().post('getUserByTgId', {_id:id})
     }
