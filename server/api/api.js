@@ -3,7 +3,8 @@ const users = require('../models/users')
 const chats = require('../models/chats')
 const deals = require('../models/deals')
 const cfg = require('../../conf')
-const RSA = require('node-rsa');
+const RSA = require('node-rsa')
+const axios = require('axios');
 
 const QiwiBillPaymentsAPI = require('@qiwi/bill-payments-node-js-sdk');
 const qiwiApi = new QiwiBillPaymentsAPI(cfg.secret_key )
@@ -12,6 +13,12 @@ const router = Router()
 //this 2 functions below useless at least now
 console.log(1)
 const changeStream = users.watch();
+
+
+const bibos = axios.create({
+    baseURL: 'http://127.0.0.1:5000/',  
+  })
+ 
 
 changeStream.on('change', (change) => {
   console.log('Изменение в коллекции пользователей:', change);
@@ -73,6 +80,15 @@ router.post('/sendMsg', async(req,res)=>{
         "from":admin["telegram_id"],
         "text":msg
     }}})
+
+    bibos.post('newmsg', {'chat_id': chat_id})
+    .then(response => {
+        console.log(response.data); 
+    })
+    .catch(error => { 
+        console.log(error); 
+    }); 
+
     if(result.acknowledged)
         res.send(true)
     else
@@ -139,6 +155,14 @@ router.post('/editDeal' , async(req,res)=>{
             "cost": deal["cost"],
 
         }})
+    bibos.post('deal_change', {'deal': deal})
+    .then(response => {
+        console.log(response.data); 
+    })
+    .catch(error => { 
+        console.log(error); 
+    }); 
+
 
     if (status.acknowledged)
         res.send(true)
