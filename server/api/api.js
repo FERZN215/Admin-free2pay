@@ -2,6 +2,7 @@ const { Router } = require('express')
 const users = require('../models/users')
 const chats = require('../models/chats')
 const deals = require('../models/deals')
+const l2m = require('../models/l2m')
 const cfg = require('../../conf')
 const RSA = require('node-rsa')
 const axios = require('axios');
@@ -22,6 +23,9 @@ const bibos = axios.create({
 
 changeStream.on('change', (change) => {
   console.log('Изменение в коллекции пользователей:', change);
+ //users.update_many({"role":"admin"},{'$pull':{arbitr:change[object]}[_id]})
+
+
 });
 
 function encrypt(value){
@@ -34,6 +38,23 @@ function decrypt(value){
 }
 
  
+
+router.post('/params', async(req,res)=>{
+
+    const {params} = req.body;
+    console.log(params);
+    const db = db_finder(params["game"]);
+    let offers = await db.find({"pr_type":params["pr_type"], "server":params["server"], "under_server":params["under_server"]});
+    
+    console.log(offers);
+    res.send(offers);
+
+
+   
+
+
+})
+
 router.post('/login', async (req, res) => {
     
     const { name, pass } = req.body//getting 2 vars from client
@@ -172,5 +193,13 @@ router.post('/editDeal' , async(req,res)=>{
 })
 
 
+
+function db_finder(game){
+    switch (game) {
+        case 'game_lage2m':
+          return l2m;
+          break;
+    }
+}
 
 module.exports = router
