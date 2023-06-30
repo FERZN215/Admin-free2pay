@@ -44,8 +44,17 @@ router.post('/params', async(req,res)=>{
     const {params} = req.body;
     console.log(params);
     const db = db_finder(params["game"]);
-    let offers = await db.find({"pr_type":params["pr_type"], "server":params["server"], "under_server":params["under_server"]});
-    
+    var offers = await db.find({"pr_type":params["pr_type"], "server":params["server"], "under_server":params["under_server"]});
+
+    for(let i =0; i < offers.length;i++){
+        let user = await users.findOne({telegram_id:offers[i]["seller"]});
+        console.log(user["local_name"]);
+        
+        
+        offers[i].photos = user["local_name"];
+        
+        
+    }
     console.log(offers);
     res.send(offers);
 
