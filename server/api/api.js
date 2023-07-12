@@ -38,31 +38,27 @@ function decrypt(value){
 }
 
  
-
 router.post('/params', async(req,res)=>{
-
     const {params} = req.body;
     console.log(params);
     const db = db_finder(params["game"]);
     var offers = await db.find({"pr_type":params["pr_type"], "server":params["server"], "under_server":params["under_server"]});
 
-    for(let i =0; i < offers.length;i++){
-        let user = await users.findOne({telegram_id:offers[i]["seller"]});
-        console.log(user["local_name"]);
-        
-        
-        offers[i].photos = user["local_name"];
-        
-        
+    for(let i =0; i < offers.length;i++) {
+        let user = await users.findOne({telegram_id: offers[i]["seller"]});
+        console.log(user? user["local_name"] : null);
+        let statisctic = user["statistics"]["successful"]/user["statistics"]["total"]*100;
+    
+        offers[i] = {
+            ...offers[i],
+            seller_name: user["local_name"],
+            rating: Math.round(statisctic)};
     }
+
     console.log(offers);
     res.send(offers);
-
-
-   
-
-
 })
+
 
 router.post('/login', async (req, res) => {
     
